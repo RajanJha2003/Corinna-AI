@@ -1,4 +1,4 @@
-import { currentUser  } from '@clerk/nextjs'
+import { currentUser } from '@clerk/nextjs'
 import Image from 'next/image'
 import { redirect } from 'next/navigation'
 import React from 'react'
@@ -8,7 +8,7 @@ type Props = {
 }
 
 const Layout = async ({ children }: Props) => {
-  const user = await currentUser ()
+  const user = await currentUser()
 
   if (user) redirect('/')
 
@@ -28,7 +28,7 @@ const Layout = async ({ children }: Props) => {
         />
         {children}
       </div>
-      <div className="hidden lg:flex flex-1 w-full max-h-full max-w-4000px overflow-visible relative bg-cream flex-col pt-10 pl-24 gap-3">
+      <div className="hidden lg:flex flex-1 w-full max-h-full max-w-4000px overflow-hidden relative bg-cream  flex-col pt-10 pl-24 gap-3">
         <h2 className="text-gravel md:text-4xl font-bold">
           Hi, I’m your AI powered sales assistant, Corinna!
         </h2>
@@ -42,7 +42,7 @@ const Layout = async ({ children }: Props) => {
           alt="app image"
           loading="lazy"
           sizes="30"
-          className="absolute shrink-0 !w-[1600px] top-48 -ml-10" // Use negative margin-left
+          className="absolute shrink-0 !w-[1600px] top-48"
           width={0}
           height={0}
         />
