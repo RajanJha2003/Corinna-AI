@@ -1,5 +1,5 @@
 'use client'
-import { useToast } from '@/components/ui/use-toast'
+
 import {
   UserRegistrationProps,
   UserRegistrationSchema,
@@ -9,6 +9,8 @@ import { useSignUp } from '@clerk/nextjs'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
+
+import { useToast } from '../use-toast'
 import { onCompleteUserRegistration } from '@/actions/auth'
 
 export const useSignUpForm = () => {
