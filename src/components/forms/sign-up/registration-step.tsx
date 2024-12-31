@@ -30,6 +30,11 @@ const RegistrationFormStep = () => {
             return(
                 <TypeSelectionForm register={register} userType={onUserType} setUserType={setOnUserType}   />
             )
+
+            case 2:
+              return(
+                <DetailForm errors={errors} register={register} />
+              )
       }
   return (
     <div>RegistrationFormStep</div>

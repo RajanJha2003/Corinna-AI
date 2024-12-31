@@ -6,7 +6,7 @@ type Props={
     errors:FieldErrors<FieldValues>
 }
 
-const AccountDetailsForm = () => {
+const AccountDetailsForm = ({register,errors}:Props) => {
   return (
     <>
     <h2 >Account Details</h2>
