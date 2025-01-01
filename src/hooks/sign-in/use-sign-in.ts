@@ -1,4 +1,4 @@
-
+'use client';
 import { UserLoginProps, UserLoginSchema } from '@/schemas/auth.schema'
 import { useSignIn } from '@clerk/nextjs'
 import { zodResolver } from '@hookform/resolvers/zod'

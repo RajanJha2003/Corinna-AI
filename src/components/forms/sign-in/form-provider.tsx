@@ -1,3 +1,5 @@
+'use client';
+
 import { Loader } from '@/components/loader'
 import { AuthContextProvider } from '@/context/use-auth-context'
 import { useSignInForm } from '@/hooks/sign-in/use-sign-in'
