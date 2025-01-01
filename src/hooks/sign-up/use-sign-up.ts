@@ -10,7 +10,8 @@ import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { onCompleteUserRegistration } from '@/actions/auth'
-import { useToast } from '../use-toast'
+import { useToast } from '@/components/ui/use-toast'
+
 
 export const useSignUpForm = () => {
   const { toast } = useToast()
