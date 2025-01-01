@@ -9,9 +9,8 @@ import { useSignUp } from '@clerk/nextjs'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
-
-import { useToast } from '../use-toast'
 import { onCompleteUserRegistration } from '@/actions/auth'
+import { useToast } from '../use-toast'
 
 export const useSignUpForm = () => {
   const { toast } = useToast()
@@ -34,18 +33,32 @@ export const useSignUpForm = () => {
     if (!isLoaded) return
 
     try {
-      await signUp.create({
+      if (!email || !password) {
+        toast({
+          title: 'Error',
+          description: 'Email and password are required.',
+        })
+        return
+      }
+
+      // Attempt to create a Clerk user
+      const response = await signUp.create({
         emailAddress: email,
         password: password,
       })
+      
+      console.log('Clerk SignUp Response:', response)
 
+      // Prepare for email verification
       await signUp.prepareEmailAddressVerification({ strategy: 'email_code' })
 
       onNext((prev) => prev + 1)
     } catch (error: any) {
+      console.error('SignUp Error:', error)
       toast({
         title: 'Error',
-        description: error.errors[0].longMessage,
+        description:
+          error?.errors?.[0]?.longMessage || 'An unexpected error occurred.',
       })
     }
   }
@@ -60,43 +73,61 @@ export const useSignUpForm = () => {
           code: values.otp,
         })
 
+        console.log('Verification Response:', completeSignUp)
+
         if (completeSignUp.status !== 'complete') {
-          return { message: 'Something went wrong!' }
+          toast({
+            title: 'Error',
+            description: 'Invalid OTP. Please try again.',
+          })
+          setLoading(false)
+          return
         }
 
-        if (completeSignUp.status == 'complete') {
-          if (!signUp.createdUserId) return
+        if (!signUp.createdUserId) {
+          toast({
+            title: 'Error',
+            description: 'User creation failed. Please try again.',
+          })
+          setLoading(false)
+          return
+        }
 
-          const registered = await onCompleteUserRegistration(
-            values.fullname,
-            signUp.createdUserId,
-            values.type
-          )
+        // Register user in the database
+        const registered = await onCompleteUserRegistration(
+          values.fullname,
+          signUp.createdUserId,
+          values.type
+        )
 
-          if (registered?.status == 200 && registered.user) {
-            await setActive({
-              session: completeSignUp.createdSessionId,
-            })
-
-            setLoading(false)
-            router.push('/dashboard')
-          }
-
-          if (registered?.status == 400) {
-            toast({
-              title: 'Error',
-              description: 'Something went wrong!',
-            })
-          }
+        if (registered?.status == 200 && registered.user) {
+          await setActive({
+            session: completeSignUp.createdSessionId,
+          })
+          toast({
+            title: 'Success',
+            description: 'Registration complete!',
+          })
+          router.push('/dashboard')
+        } else {
+          toast({
+            title: 'Error',
+            description: 'Failed to register user. Try again.',
+          })
         }
       } catch (error: any) {
+        console.error('Final Registration Error:', error)
         toast({
           title: 'Error',
-          description: error.errors[0].longMessage,
+          description:
+            error?.errors?.[0]?.longMessage || 'Registration process failed.',
         })
+      } finally {
+        setLoading(false)
       }
     }
   )
+
   return {
     methods,
     onHandleSubmit,
